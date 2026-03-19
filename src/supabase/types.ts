@@ -906,8 +906,11 @@ export type Database = {
           created_at: string
           estado: string
           id: string
+          latitud: number | null
+          longitud: number | null
           nombres: string
           orden: number
+          punto_abordaje_id: string | null
           reserva_id: string
           telefono: string | null
           updated_at: string
@@ -916,8 +919,11 @@ export type Database = {
           created_at?: string
           estado?: string
           id?: string
+          latitud?: number | null
+          longitud?: number | null
           nombres: string
           orden?: number
+          punto_abordaje_id?: string | null
           reserva_id: string
           telefono?: string | null
           updated_at?: string
@@ -926,13 +932,23 @@ export type Database = {
           created_at?: string
           estado?: string
           id?: string
+          latitud?: number | null
+          longitud?: number | null
           nombres?: string
           orden?: number
+          punto_abordaje_id?: string | null
           reserva_id?: string
           telefono?: string | null
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "reserva_pasajeros_punto_abordaje_id_fkey"
+            columns: ["punto_abordaje_id"]
+            isOneToOne: false
+            referencedRelation: "puntos_abordaje"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "reserva_pasajeros_reserva_id_fkey"
             columns: ["reserva_id"]
@@ -961,13 +977,17 @@ export type Database = {
           fecha_pago: string | null
           fecha_reserva: string
           id: string
+          latitud_abordaje: number | null
+          longitud_abordaje: number | null
           motivo_cancelacion: string | null
           notas: string | null
+          orden_recogida: number | null
           pagado_en_agencia: boolean
           pasajero_id: string
           porcentaje_comision: number
           precio_pasaje: number
           punto_abordaje_id: string | null
+          ruta_snapshot_json: Json | null
           updated_at: string
           valor_comision: number
           valor_total: number
@@ -987,13 +1007,17 @@ export type Database = {
           fecha_pago?: string | null
           fecha_reserva?: string
           id?: string
+          latitud_abordaje?: number | null
+          longitud_abordaje?: number | null
           motivo_cancelacion?: string | null
           notas?: string | null
+          orden_recogida?: number | null
           pagado_en_agencia?: boolean
           pasajero_id: string
           porcentaje_comision: number
           precio_pasaje: number
           punto_abordaje_id?: string | null
+          ruta_snapshot_json?: Json | null
           updated_at?: string
           valor_comision: number
           valor_total?: number
@@ -1013,13 +1037,17 @@ export type Database = {
           fecha_pago?: string | null
           fecha_reserva?: string
           id?: string
+          latitud_abordaje?: number | null
+          longitud_abordaje?: number | null
           motivo_cancelacion?: string | null
           notas?: string | null
+          orden_recogida?: number | null
           pagado_en_agencia?: boolean
           pasajero_id?: string
           porcentaje_comision?: number
           precio_pasaje?: number
           punto_abordaje_id?: string | null
+          ruta_snapshot_json?: Json | null
           updated_at?: string
           valor_comision?: number
           valor_total?: number
@@ -1375,6 +1403,186 @@ export type Database = {
           },
         ]
       }
+      viaje_paradas: {
+        Row: {
+          created_at: string
+          distancia_metros: number | null
+          estado: string
+          eta_min: number | null
+          fecha_completada: string | null
+          fecha_estimada_llegada: string | null
+          fecha_real_llegada: string | null
+          id: string
+          latitud: number
+          longitud: number
+          mapbox_waypoint_index: number | null
+          metadata: Json | null
+          nombre: string
+          orden_manual: number | null
+          orden_optimo: number | null
+          punto_abordaje_id: string | null
+          reserva_id: string | null
+          reserva_pasajero_id: string | null
+          tipo: string
+          updated_at: string
+          viaje_id: string
+        }
+        Insert: {
+          created_at?: string
+          distancia_metros?: number | null
+          estado?: string
+          eta_min?: number | null
+          fecha_completada?: string | null
+          fecha_estimada_llegada?: string | null
+          fecha_real_llegada?: string | null
+          id?: string
+          latitud: number
+          longitud: number
+          mapbox_waypoint_index?: number | null
+          metadata?: Json | null
+          nombre: string
+          orden_manual?: number | null
+          orden_optimo?: number | null
+          punto_abordaje_id?: string | null
+          reserva_id?: string | null
+          reserva_pasajero_id?: string | null
+          tipo: string
+          updated_at?: string
+          viaje_id: string
+        }
+        Update: {
+          created_at?: string
+          distancia_metros?: number | null
+          estado?: string
+          eta_min?: number | null
+          fecha_completada?: string | null
+          fecha_estimada_llegada?: string | null
+          fecha_real_llegada?: string | null
+          id?: string
+          latitud?: number
+          longitud?: number
+          mapbox_waypoint_index?: number | null
+          metadata?: Json | null
+          nombre?: string
+          orden_manual?: number | null
+          orden_optimo?: number | null
+          punto_abordaje_id?: string | null
+          reserva_id?: string | null
+          reserva_pasajero_id?: string | null
+          tipo?: string
+          updated_at?: string
+          viaje_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "viaje_paradas_punto_abordaje_id_fkey"
+            columns: ["punto_abordaje_id"]
+            isOneToOne: false
+            referencedRelation: "puntos_abordaje"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "viaje_paradas_reserva_id_fkey"
+            columns: ["reserva_id"]
+            isOneToOne: false
+            referencedRelation: "detalle_mis_reservas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "viaje_paradas_reserva_id_fkey"
+            columns: ["reserva_id"]
+            isOneToOne: false
+            referencedRelation: "reservas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "viaje_paradas_reserva_pasajero_id_fkey"
+            columns: ["reserva_pasajero_id"]
+            isOneToOne: false
+            referencedRelation: "reserva_pasajeros"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "viaje_paradas_viaje_id_fkey"
+            columns: ["viaje_id"]
+            isOneToOne: false
+            referencedRelation: "detalle_mis_reservas"
+            referencedColumns: ["viaje_id"]
+          },
+          {
+            foreignKeyName: "viaje_paradas_viaje_id_fkey"
+            columns: ["viaje_id"]
+            isOneToOne: false
+            referencedRelation: "viajes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      viaje_tracking: {
+        Row: {
+          accuracy_metros: number | null
+          conductor_id: string
+          heading: number | null
+          id: string
+          latitud: number
+          longitud: number
+          recorded_at: string
+          speed_mps: number | null
+          viaje_id: string
+        }
+        Insert: {
+          accuracy_metros?: number | null
+          conductor_id: string
+          heading?: number | null
+          id?: string
+          latitud: number
+          longitud: number
+          recorded_at?: string
+          speed_mps?: number | null
+          viaje_id: string
+        }
+        Update: {
+          accuracy_metros?: number | null
+          conductor_id?: string
+          heading?: number | null
+          id?: string
+          latitud?: number
+          longitud?: number
+          recorded_at?: string
+          speed_mps?: number | null
+          viaje_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "viaje_tracking_conductor_id_fkey"
+            columns: ["conductor_id"]
+            isOneToOne: false
+            referencedRelation: "conductores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "viaje_tracking_conductor_id_fkey"
+            columns: ["conductor_id"]
+            isOneToOne: false
+            referencedRelation: "perfil_conductor"
+            referencedColumns: ["conductor_id"]
+          },
+          {
+            foreignKeyName: "viaje_tracking_viaje_id_fkey"
+            columns: ["viaje_id"]
+            isOneToOne: false
+            referencedRelation: "detalle_mis_reservas"
+            referencedColumns: ["viaje_id"]
+          },
+          {
+            foreignKeyName: "viaje_tracking_viaje_id_fkey"
+            columns: ["viaje_id"]
+            isOneToOne: false
+            referencedRelation: "viajes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       viajes: {
         Row: {
           acepta_encomiendas: boolean
@@ -1384,6 +1592,8 @@ export type Database = {
           cupos_confirmados: number
           cupos_reservados: number
           cupos_totales: number
+          distancia_total_metros: number | null
+          duracion_total_segundos: number | null
           estado: Database["public"]["Enums"]["estado_viaje"]
           fecha_creacion: string
           hora_llegada_estimada: string | null
@@ -1393,10 +1603,16 @@ export type Database = {
           id: string
           motivo_cancelacion: string | null
           observaciones: string | null
+          orden_paradas_json: Json | null
           planilla_generada: boolean
           precio_pasaje: number
           punto_abordaje_id: string | null
           ruta_id: string
+          ruta_optimizada_json: Json | null
+          ubicacion_actual_lat: number | null
+          ubicacion_actual_lng: number | null
+          ubicacion_actualizada_at: string | null
+          ultima_optimizacion: string | null
           updated_at: string
           url_planilla: string | null
           vehiculo_id: string
@@ -1409,6 +1625,8 @@ export type Database = {
           cupos_confirmados?: number
           cupos_reservados?: number
           cupos_totales: number
+          distancia_total_metros?: number | null
+          duracion_total_segundos?: number | null
           estado?: Database["public"]["Enums"]["estado_viaje"]
           fecha_creacion?: string
           hora_llegada_estimada?: string | null
@@ -1418,10 +1636,16 @@ export type Database = {
           id?: string
           motivo_cancelacion?: string | null
           observaciones?: string | null
+          orden_paradas_json?: Json | null
           planilla_generada?: boolean
           precio_pasaje: number
           punto_abordaje_id?: string | null
           ruta_id: string
+          ruta_optimizada_json?: Json | null
+          ubicacion_actual_lat?: number | null
+          ubicacion_actual_lng?: number | null
+          ubicacion_actualizada_at?: string | null
+          ultima_optimizacion?: string | null
           updated_at?: string
           url_planilla?: string | null
           vehiculo_id: string
@@ -1434,6 +1658,8 @@ export type Database = {
           cupos_confirmados?: number
           cupos_reservados?: number
           cupos_totales?: number
+          distancia_total_metros?: number | null
+          duracion_total_segundos?: number | null
           estado?: Database["public"]["Enums"]["estado_viaje"]
           fecha_creacion?: string
           hora_llegada_estimada?: string | null
@@ -1443,10 +1669,16 @@ export type Database = {
           id?: string
           motivo_cancelacion?: string | null
           observaciones?: string | null
+          orden_paradas_json?: Json | null
           planilla_generada?: boolean
           precio_pasaje?: number
           punto_abordaje_id?: string | null
           ruta_id?: string
+          ruta_optimizada_json?: Json | null
+          ubicacion_actual_lat?: number | null
+          ubicacion_actual_lng?: number | null
+          ubicacion_actualizada_at?: string | null
+          ultima_optimizacion?: string | null
           updated_at?: string
           url_planilla?: string | null
           vehiculo_id?: string
@@ -1618,13 +1850,17 @@ export type Database = {
           fecha_pago: string | null
           fecha_reserva: string
           id: string
+          latitud_abordaje: number | null
+          longitud_abordaje: number | null
           motivo_cancelacion: string | null
           notas: string | null
+          orden_recogida: number | null
           pagado_en_agencia: boolean
           pasajero_id: string
           porcentaje_comision: number
           precio_pasaje: number
           punto_abordaje_id: string | null
+          ruta_snapshot_json: Json | null
           updated_at: string
           valor_comision: number
           valor_total: number
@@ -1726,13 +1962,17 @@ export type Database = {
           fecha_pago: string | null
           fecha_reserva: string
           id: string
+          latitud_abordaje: number | null
+          longitud_abordaje: number | null
           motivo_cancelacion: string | null
           notas: string | null
+          orden_recogida: number | null
           pagado_en_agencia: boolean
           pasajero_id: string
           porcentaje_comision: number
           precio_pasaje: number
           punto_abordaje_id: string | null
+          ruta_snapshot_json: Json | null
           updated_at: string
           valor_comision: number
           valor_total: number
@@ -1765,13 +2005,17 @@ export type Database = {
           fecha_pago: string | null
           fecha_reserva: string
           id: string
+          latitud_abordaje: number | null
+          longitud_abordaje: number | null
           motivo_cancelacion: string | null
           notas: string | null
+          orden_recogida: number | null
           pagado_en_agencia: boolean
           pasajero_id: string
           porcentaje_comision: number
           precio_pasaje: number
           punto_abordaje_id: string | null
+          ruta_snapshot_json: Json | null
           updated_at: string
           valor_comision: number
           valor_total: number
@@ -1838,13 +2082,17 @@ export type Database = {
           fecha_pago: string | null
           fecha_reserva: string
           id: string
+          latitud_abordaje: number | null
+          longitud_abordaje: number | null
           motivo_cancelacion: string | null
           notas: string | null
+          orden_recogida: number | null
           pagado_en_agencia: boolean
           pasajero_id: string
           porcentaje_comision: number
           precio_pasaje: number
           punto_abordaje_id: string | null
+          ruta_snapshot_json: Json | null
           updated_at: string
           valor_comision: number
           valor_total: number
@@ -1911,13 +2159,17 @@ export type Database = {
           fecha_pago: string | null
           fecha_reserva: string
           id: string
+          latitud_abordaje: number | null
+          longitud_abordaje: number | null
           motivo_cancelacion: string | null
           notas: string | null
+          orden_recogida: number | null
           pagado_en_agencia: boolean
           pasajero_id: string
           porcentaje_comision: number
           precio_pasaje: number
           punto_abordaje_id: string | null
+          ruta_snapshot_json: Json | null
           updated_at: string
           valor_comision: number
           valor_total: number
@@ -1952,6 +2204,8 @@ export type Database = {
           cupos_confirmados: number
           cupos_reservados: number
           cupos_totales: number
+          distancia_total_metros: number | null
+          duracion_total_segundos: number | null
           estado: Database["public"]["Enums"]["estado_viaje"]
           fecha_creacion: string
           hora_llegada_estimada: string | null
@@ -1961,10 +2215,16 @@ export type Database = {
           id: string
           motivo_cancelacion: string | null
           observaciones: string | null
+          orden_paradas_json: Json | null
           planilla_generada: boolean
           precio_pasaje: number
           punto_abordaje_id: string | null
           ruta_id: string
+          ruta_optimizada_json: Json | null
+          ubicacion_actual_lat: number | null
+          ubicacion_actual_lng: number | null
+          ubicacion_actualizada_at: string | null
+          ultima_optimizacion: string | null
           updated_at: string
           url_planilla: string | null
           vehiculo_id: string
@@ -2061,6 +2321,8 @@ export type Database = {
           cupos_confirmados: number
           cupos_reservados: number
           cupos_totales: number
+          distancia_total_metros: number | null
+          duracion_total_segundos: number | null
           estado: Database["public"]["Enums"]["estado_viaje"]
           fecha_creacion: string
           hora_llegada_estimada: string | null
@@ -2070,10 +2332,16 @@ export type Database = {
           id: string
           motivo_cancelacion: string | null
           observaciones: string | null
+          orden_paradas_json: Json | null
           planilla_generada: boolean
           precio_pasaje: number
           punto_abordaje_id: string | null
           ruta_id: string
+          ruta_optimizada_json: Json | null
+          ubicacion_actual_lat: number | null
+          ubicacion_actual_lng: number | null
+          ubicacion_actualizada_at: string | null
+          ultima_optimizacion: string | null
           updated_at: string
           url_planilla: string | null
           vehiculo_id: string
@@ -2098,13 +2366,17 @@ export type Database = {
           fecha_pago: string | null
           fecha_reserva: string
           id: string
+          latitud_abordaje: number | null
+          longitud_abordaje: number | null
           motivo_cancelacion: string | null
           notas: string | null
+          orden_recogida: number | null
           pagado_en_agencia: boolean
           pasajero_id: string
           porcentaje_comision: number
           precio_pasaje: number
           punto_abordaje_id: string | null
+          ruta_snapshot_json: Json | null
           updated_at: string
           valor_comision: number
           valor_total: number
@@ -2126,8 +2398,11 @@ export type Database = {
           created_at: string
           estado: string
           id: string
+          latitud: number | null
+          longitud: number | null
           nombres: string
           orden: number
+          punto_abordaje_id: string | null
           reserva_id: string
           telefono: string | null
           updated_at: string
