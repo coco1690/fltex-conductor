@@ -90,13 +90,15 @@ import { StatusBar } from 'expo-status-bar'
 import { supabase } from '../src/supabase/client'
 import { useAuthStore } from '../src/stores/authStore'
 import { useTheme } from '../src/theme/useTheme'
+import { useViajesStore } from '../src/stores/viajesStore'
+
 
 export default function RootLayout() {
   const { usuario, conductor, cargarPerfil, listo } = useAuthStore()
   const { isDark } = useTheme()
   const router = useRouter()
   const segments = useSegments()
-  
+
 
   // FIX 1: semáforo para bloquear el listener mientras init() corre
   const inicializando = useRef(false)
@@ -111,6 +113,17 @@ export default function RootLayout() {
         if (session?.user) {
           await (supabase as any).rpc('ensure_usuario_profile')
           await cargarPerfil()
+
+          // Verificar viaje en abordando al abrir la app
+          const { cargarViajeEnCurso } = useViajesStore.getState()
+          const { conductor } = useAuthStore.getState()
+          if (conductor?.id) {
+            await cargarViajeEnCurso(conductor.id)
+            const viaje = useViajesStore.getState().viajeEnCurso
+            if (viaje?.estado === 'abordando') {
+              router.replace({ pathname: '/abordaje', params: { viajeId: viaje.id } })
+            }
+          }
         }
       } catch (e) {
         console.warn('Error en init:', e)

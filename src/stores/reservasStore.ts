@@ -265,6 +265,13 @@ type Reserva = ReservaRow & {
     }
   }
   reserva_pasajeros?: ReservaPasajero[]
+  puntos_abordaje?: {
+    id: string
+    nombre: string
+    latitud: number | null
+    longitud: number | null
+    descripcion: string | null
+  } | null
 }
 
 interface ReservasState {
@@ -407,15 +414,41 @@ export const useReservasStore = create<ReservasState>((set) => ({
     }
   },
 
+  // cargarReservasViaje: async (viajeId) => {
+  //   try {
+  //     const { data, error } = await supabase
+  //       .from('reservas')
+  //       .select(`
+  //         *,
+  //         reserva_pasajeros (*),
+  //         puntos_abordaje (id, nombre, descripcion)
+  //       `)
+  //       .eq('viaje_id', viajeId)
+  //       .in('estado', ['reservada', 'abordada', 'no_show'])
+  //       .order('fecha_reserva', { ascending: true })
+
+  //     if (error) throw error
+  //     return (data || []) as unknown as Reserva[]
+  //   } catch (error: any) {
+  //     set({ error: error.message })
+  //     return []
+  //   }
+  // },
+
+  // FIX: abordarPasajero ya NO recarga viajeActivo internamente.
+  // La recarga la maneja siempre el componente (ViajeCurso → recargarTodo)
+  // para evitar doble llamada a cargarViajeDetalle que causaba
+  // cupos_confirmados = 4 en lugar de 2.
+
   cargarReservasViaje: async (viajeId) => {
     try {
       const { data, error } = await supabase
         .from('reservas')
         .select(`
-          *,
-          reserva_pasajeros (*),
-          puntos_abordaje (id, nombre, descripcion)
-        `)
+        *,
+        reserva_pasajeros (id, nombres, telefono, latitud, longitud, estado),
+        puntos_abordaje (id, nombre, latitud, longitud, descripcion)
+      `)
         .eq('viaje_id', viajeId)
         .in('estado', ['reservada', 'abordada', 'no_show'])
         .order('fecha_reserva', { ascending: true })
@@ -428,10 +461,6 @@ export const useReservasStore = create<ReservasState>((set) => ({
     }
   },
 
-  // FIX: abordarPasajero ya NO recarga viajeActivo internamente.
-  // La recarga la maneja siempre el componente (ViajeCurso → recargarTodo)
-  // para evitar doble llamada a cargarViajeDetalle que causaba
-  // cupos_confirmados = 4 en lugar de 2.
   abordarPasajero: async (reservaId, conductorUserId) => {
     try {
       const { error } = await supabase.rpc('abordar_pasajero', {

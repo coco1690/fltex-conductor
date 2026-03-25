@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { View, Text, StyleSheet, ActivityIndicator, Alert, TouchableOpacity } from 'react-native'
 import { Ionicons } from '@expo/vector-icons'
+import { router } from 'expo-router'
 import { useTheme } from '../../src/theme/useTheme'
 import { CardPasajero } from './CardPasajero'
 import { ModalAgregarPasajero } from './ModalAgregarPasajero'
@@ -58,9 +59,6 @@ export function ListaPasajeros({ reservas, viajeId, viajeEstado, cargando, usuar
     }
   }
 
-  // FIX: cerrar el modal PRIMERO, luego recargar después de que
-  // React procese el cierre — evita que CameraView se remonte
-  // con nuevas props mientras el modal sigue visible
   const handleAbordajeExitoso = () => {
     setModalQRVisible(false)
     setTimeout(() => onRecargar(), 400)
@@ -88,11 +86,19 @@ export function ListaPasajeros({ reservas, viajeId, viajeEstado, cargando, usuar
         {viajeEstado === 'abordando' && (
           <View style={styles.botonesHeader}>
             <TouchableOpacity
-              style={[styles.botonQR, { backgroundColor: theme.primaryLight, borderColor: theme.primary }]}
+              style={[styles.botonIcono, { backgroundColor: theme.primaryLight, borderColor: theme.primary }]}
               onPress={() => setModalQRVisible(true)}
             >
               <Ionicons name="qr-code-outline" size={16} color={theme.primary} />
-              <Text style={[styles.botonQRTexto, { color: theme.primary }]}>QR</Text>
+              <Text style={[styles.botonIconoTexto, { color: theme.primary }]}>QR</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.botonIcono, { backgroundColor: theme.warningLight, borderColor: theme.warning }]}
+              onPress={() => router.push({ pathname: '/abordaje', params: { viajeId } })}
+            >
+              <Ionicons name="map-outline" size={16} color={theme.warning} />
+              <Text style={[styles.botonIconoTexto, { color: theme.warning }]}>Mapa</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -149,11 +155,11 @@ const styles = StyleSheet.create({
   tituloFila: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   titulo: { fontSize: 17, fontWeight: '600' },
   botonesHeader: { flexDirection: 'row', gap: 8, alignItems: 'center' },
-  botonQR: {
+  botonIcono: {
     flexDirection: 'row', alignItems: 'center', gap: 5,
     paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20, borderWidth: 1,
   },
-  botonQRTexto: { fontSize: 13, fontWeight: '700' },
+  botonIconoTexto: { fontSize: 13, fontWeight: '700' },
   botonAgregar: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
     paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20,

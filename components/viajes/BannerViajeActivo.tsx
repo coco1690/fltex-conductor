@@ -67,14 +67,12 @@ export function BannerViajeActivo({ titulo }: Props) {
 
   return (
     <View style={styles.wrapper}>
-      {/* Título de sección opcional */}
       {titulo && (
         <Text style={[styles.tituloSeccion, { color: theme.textPrimary }]}>
           {titulo}
         </Text>
       )}
 
-      {/* Card principal */}
       <View style={[styles.card, { backgroundColor: theme.backgroundSecondary, borderColor: theme.border }]}>
 
         {/* Header: estado + porcentaje */}
@@ -107,9 +105,7 @@ export function BannerViajeActivo({ titulo }: Props) {
               {formatFecha(viajeEnCurso.hora_salida_programada)}
             </Text>
           </View>
-
           <View style={[styles.infoDivider, { backgroundColor: theme.border }]} />
-
           <View style={styles.infoItem}>
             <Ionicons name="time-outline" size={13} color={theme.textMuted} />
             <Text style={[styles.infoTexto, { color: theme.textSecondary }]}>
@@ -117,9 +113,7 @@ export function BannerViajeActivo({ titulo }: Props) {
               {viajeEnCurso.hora_llegada_estimada ? ` → ${formatHora(viajeEnCurso.hora_llegada_estimada)}` : ''}
             </Text>
           </View>
-
           <View style={[styles.infoDivider, { backgroundColor: theme.border }]} />
-
           <View style={styles.infoItem}>
             <Ionicons name="people-outline" size={13} color={theme.textMuted} />
             <Text style={[styles.infoTexto, { color: theme.textSecondary }]}>
@@ -132,12 +126,7 @@ export function BannerViajeActivo({ titulo }: Props) {
         {esEnCurso && (
           <View style={styles.progressSection}>
             <View style={[styles.progressTrack, { backgroundColor: theme.border }]}>
-              <View
-                style={[
-                  styles.progressFill,
-                  { width: `${porcentaje}%` as any, backgroundColor: acento },
-                ]}
-              />
+              <View style={[styles.progressFill, { width: `${porcentaje}%` as any, backgroundColor: acento }]} />
             </View>
             <View style={styles.progressLabels}>
               <Text style={[styles.progressLabel, { color: theme.textMuted }]}>Origen</Text>
@@ -146,22 +135,33 @@ export function BannerViajeActivo({ titulo }: Props) {
           </View>
         )}
 
-        {/* Separador */}
         <View style={[styles.divider, { backgroundColor: theme.border }]} />
 
-        {/* Botones de acción */}
+        {/* Botones */}
         <View style={styles.botonesRow}>
           {esAbordando && (
-            <TouchableOpacity
-              style={[styles.botonPrimario, { backgroundColor: acento }]}
-              onPress={confirmarIniciar}
-              disabled={cargando}
-            >
-              <Ionicons name="play-circle" size={18} color={theme.textInverse} />
-              <Text style={[styles.botonPrimarioTexto, { color: theme.textInverse }]}>
-                {cargando ? 'Iniciando…' : 'Iniciar viaje'}
-              </Text>
-            </TouchableOpacity>
+            <>
+              <TouchableOpacity
+                style={[styles.botonSecundario, { backgroundColor: theme.backgroundCard, borderColor: theme.border }]}
+                onPress={() => router.push({ pathname: '/abordaje', params: { viajeId: viajeEnCurso.id } })}
+              >
+                <Ionicons name="map-outline" size={16} color={theme.textPrimary} />
+                <Text style={[styles.botonSecundarioTexto, { color: theme.textPrimary }]}>
+                  Ver mapa
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[styles.botonPrimario, { backgroundColor: acento }]}
+                onPress={confirmarIniciar}
+                disabled={cargando}
+              >
+                <Ionicons name="play-circle" size={18} color={theme.textInverse} />
+                <Text style={[styles.botonPrimarioTexto, { color: theme.textInverse }]}>
+                  {cargando ? 'Iniciando…' : 'Iniciar viaje'}
+                </Text>
+              </TouchableOpacity>
+            </>
           )}
 
           {esEnCurso && (
@@ -196,138 +196,35 @@ export function BannerViajeActivo({ titulo }: Props) {
 }
 
 const styles = StyleSheet.create({
-  wrapper: {
-    gap: 10,
-  },
-  tituloSeccion: {
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  card: {
-    borderRadius: 20,
-    borderWidth: 1,
-    padding: 18,
-    gap: 14,
-  },
-
-  // Header
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  statusDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  statusLabel: {
-    fontSize: 11,
-    fontWeight: '800',
-    letterSpacing: 1.2,
-  },
-  pctBadge: {
-    paddingHorizontal: 10,
-    paddingVertical: 3,
-    borderRadius: 20,
-    borderWidth: 1,
-  },
-  pctTexto: {
-    fontSize: 12,
-    fontWeight: '700',
-  },
-
-  // Ruta
-  ruta: {
-    fontSize: 20,
-    fontWeight: '800',
-    letterSpacing: -0.4,
-  },
-
-  // Info row
-  infoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  infoItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  infoTexto: {
-    fontSize: 12,
-    fontWeight: '500',
-  },
-  infoDivider: {
-    width: 1,
-    height: 12,
-  },
-
-  // Progress
-  progressSection: {
-    gap: 5,
-  },
-  progressTrack: {
-    height: 6,
-    borderRadius: 3,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: 6,
-    borderRadius: 3,
-  },
-  progressLabels: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  progressLabel: {
-    fontSize: 10,
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    letterSpacing: 0.4,
-  },
-
-  // Separador
-  divider: {
-    height: 1,
-  },
-
-  // Botones
-  botonesRow: {
-    flexDirection: 'row',
-    gap: 10,
-  },
+  wrapper: { gap: 10 },
+  tituloSeccion: { fontSize: 18, fontWeight: '600' },
+  card: { borderRadius: 20, borderWidth: 1, padding: 18, gap: 14 },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  headerLeft: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  statusDot: { width: 8, height: 8, borderRadius: 4 },
+  statusLabel: { fontSize: 11, fontWeight: '800', letterSpacing: 1.2 },
+  pctBadge: { paddingHorizontal: 10, paddingVertical: 3, borderRadius: 20, borderWidth: 1 },
+  pctTexto: { fontSize: 12, fontWeight: '700' },
+  ruta: { fontSize: 20, fontWeight: '800', letterSpacing: -0.4 },
+  infoRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  infoItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  infoTexto: { fontSize: 12, fontWeight: '500' },
+  infoDivider: { width: 1, height: 12 },
+  progressSection: { gap: 5 },
+  progressTrack: { height: 6, borderRadius: 3, overflow: 'hidden' },
+  progressFill: { height: 6, borderRadius: 3 },
+  progressLabels: { flexDirection: 'row', justifyContent: 'space-between' },
+  progressLabel: { fontSize: 10, fontWeight: '600', textTransform: 'uppercase', letterSpacing: 0.4 },
+  divider: { height: 1 },
+  botonesRow: { flexDirection: 'row', gap: 10 },
   botonPrimario: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    paddingVertical: 13,
-    borderRadius: 12,
+    flex: 1, flexDirection: 'row', alignItems: 'center',
+    justifyContent: 'center', gap: 6, paddingVertical: 13, borderRadius: 12,
   },
-  botonPrimarioTexto: {
-    fontSize: 14,
-    fontWeight: '800',
-  },
+  botonPrimarioTexto: { fontSize: 14, fontWeight: '800' },
   botonSecundario: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    paddingVertical: 13,
-    borderRadius: 12,
-    borderWidth: 1,
+    flex: 1, flexDirection: 'row', alignItems: 'center',
+    justifyContent: 'center', gap: 6, paddingVertical: 13, borderRadius: 12, borderWidth: 1,
   },
-  botonSecundarioTexto: {
-    fontSize: 14,
-    fontWeight: '700',
-  },
+  botonSecundarioTexto: { fontSize: 14, fontWeight: '700' },
 })

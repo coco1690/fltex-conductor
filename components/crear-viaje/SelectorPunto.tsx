@@ -22,7 +22,13 @@ export function SelectorPunto({ puntos, puntoId, onSelect }: Props) {
       <Text style={[styles.label, { color: theme.textPrimary }]}>Punto de abordaje</Text>
 
       {puntos.length === 0 ? (
-        <ActivityIndicator color={theme.primary} />
+        // <ActivityIndicator color={theme.primary} />
+        <View style={[styles.sinPuntos, { backgroundColor: theme.backgroundCard, borderColor: theme.border }]}>
+          <Ionicons name="location-outline" size={18} color={theme.textMuted} />
+          <Text style={[styles.sinPuntosTexto, { color: theme.textMuted }]}>
+            Esta ruta no tiene puntos de abordaje fijos
+          </Text>
+        </View>
       ) : (
         puntos.map((punto) => (
           <TouchableOpacity
@@ -67,4 +73,11 @@ const styles = StyleSheet.create({
   opcionCard: { flexDirection: 'row', alignItems: 'center', gap: 10, padding: 14, borderRadius: 12, borderWidth: 1 },
   opcionNombre: { fontSize: 14, fontWeight: '600' },
   opcionDetalle: { fontSize: 12, marginTop: 2 },
+
+  // Agregar al StyleSheet
+  sinPuntos: {
+    flexDirection: 'row', alignItems: 'center', gap: 10,
+    padding: 14, borderRadius: 12, borderWidth: 1,
+  },
+  sinPuntosTexto: { fontSize: 14 },
 })

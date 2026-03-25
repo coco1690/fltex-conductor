@@ -58,13 +58,14 @@ export default function CrearViaje() {
 
   const handleRevisar = () => {
     setIntentoEnvio(true)
-    if (!rutaId || !puntoId || !horaSeleccionada) return
+    if (!rutaId || !horaSeleccionada) return        // puntoId ya no es obligatorio
     if (!conductor?.vehiculo_id) return
     setModalVisible(true)
   }
 
   const handleConfirmar = async () => {
-    if (!rutaId || !puntoId || !horaSeleccionada || !conductor?.vehiculo_id) return
+    console.log('handleConfirmar:', { rutaId, puntoId, horaSeleccionada, vehiculoId: conductor?.vehiculo_id, conductorId: conductor?.id })
+    if (!rutaId || !horaSeleccionada || !conductor?.vehiculo_id) return
 
     const fecha = new Date()
     fecha.setDate(fecha.getDate() + fechaSeleccionada)
@@ -77,19 +78,18 @@ export default function CrearViaje() {
       conductor_id: conductor.id,
       vehiculo_id: conductor.vehiculo_id,
       ruta_id: rutaId,
-      punto_abordaje_id: puntoId,
+      punto_abordaje_id: puntoId ?? null,
       hora_salida: fecha.toISOString(),
       acepta_encomiendas: aceptaEncomiendas,
     })
 
+    console.log('viajeId resultado:', viajeId)
+    console.log('error:', useViajesStore.getState().error)
+
     if (viajeId) {
       router.back()
-    } else {
-      const errorMsg = useViajesStore.getState().error
-      setModalVisible(false)
     }
   }
-
   return (
     <>
       <ScrollView
@@ -122,9 +122,7 @@ export default function CrearViaje() {
           puntoId={puntoId}
           onSelect={setPuntoId}
         />
-        {intentoEnvio && !puntoId && (
-          <ErrorCampo mensaje="Selecciona un punto de abordaje" />
-        )}
+
 
         <SelectorFechaHora
           fecha={fechaSeleccionada}
